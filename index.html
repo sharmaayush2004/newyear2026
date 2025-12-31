@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Happy New Year 2026 for Roop</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: black;
+            color: white;
+            overflow: hidden;
+            position: relative;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 450px;
+            margin: 40px auto;
+            padding: 25px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            box-shadow: 0 0 25px gold;
+            backdrop-filter: blur(8px);
+            display: none;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+        }
+
+        .year {
+            font-size: 4rem;
+            color: gold;
+        }
+
+        .to {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #ffd700;
+            letter-spacing: 1px;
+        }
+
+        #wishText {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-top: 15px;
+            white-space: pre-line;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+
+        .cats img {
+            width: 150px;
+            margin: 10px auto;
+            display: block;
+            animation: float 3s ease-in-out infinite;
+            border-radius: 20px;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+
+        .auto-img {
+            width: 100%;
+            border-radius: 18px;
+            margin-top: 15px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+            animation: glowImg 3s infinite alternate;
+        }
+
+        @keyframes glowImg {
+            from {
+                filter: brightness(1);
+            }
+
+            to {
+                filter: brightness(1.2);
+            }
+        }
+
+        .paw {
+            position: fixed;
+            width: 24px;
+            height: 24px;
+            pointer-events: none;
+            opacity: 0.8;
+            animation: fadePaw 1s forwards;
+        }
+
+        @keyframes fadePaw {
+            to {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        #musicHint {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 0.75rem;
+            opacity: 0.7;
+            z-index: 20;
+        }
+
+        #qrContainer {
+            position: relative;
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        #qrContainer img {
+            width: 180px;
+        }
+
+        #pinEntry {
+            display: none;
+            margin-top: 20px;
+        }
+
+        #pinInput {
+            padding: 8px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: none;
+            text-align: center;
+        }
+
+        #submitPin {
+            padding: 8px 15px;
+            font-size: 1rem;
+            margin-left: 10px;
+            border-radius: 5px;
+            border: none;
+            background: gold;
+            color: black;
+            cursor: pointer;
+        }
+
+        #errorMsg {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- QR Code Section -->
+    <div id="qrContainer">
+        <h2>📱 Scan QR to open your New Year wish!</h2>
+        <img id="qrCode" alt="QR Code">
+    </div>
+
+    <!-- PIN Entry Section -->
+    <div id="pinEntry">
+        <h3>Enter your Date of Birth to unlock 🎉</h3>
+        <input type="password" id="pinInput" placeholder="DD/MM/YYYY">
+        <button id="submitPin">Unlock</button>
+        <p id="errorMsg"></p>
+    </div>
+
+    <!-- Main Wish Container -->
+    <div class="container" id="wishContainer">
+        <h1>🎉 Happy New Year 🎉</h1>
+        <h2 class="year">2026</h2>
+        <h3 class="to">✨ For Roop ✨</h3>
+        <div class="cats">
+            <img id="catImage" alt="Cute Cat">
+        </div>
+        <p id="wishText"></p>
+        <img id="autoDecor" class="auto-img">
+    </div>
+
+    <canvas id="fireworks"></canvas>
+    <canvas id="glitter"></canvas>
+
+    <audio id="bgMusic" loop>
+        <source src="https://cdn.pixabay.com/audio/2022/12/22/audio_9a6d9c9dfb.mp3">
+    </audio>
+    <div id="musicHint">🔊 Tap anywhere to start music</div>
+
+    <script>
+        /* -------------------- QR CODE -------------------- */
+        const qrCode = document.getElementById("qrCode");
+        try {
+            let currentURL = window.location.href;
+            if (currentURL.startsWith("file://")) { currentURL = "https://your-website-link.com"; } // replace if hosted
+            qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(currentURL)}`;
+        } catch (err) { console.error("QR code failed", err); qrCode.alt = "QR code not available"; }
+
+        /* -------------------- PIN LOGIC -------------------- */
+        const correctPin = "09/07/2005";
+        const qrContainer = document.getElementById("qrContainer");
+        const pinEntry = document.getElementById("pinEntry");
+        const pinInput = document.getElementById("pinInput");
+        const submitPin = document.getElementById("submitPin");
+        const errorMsg = document.getElementById("errorMsg");
+        const wishContainer = document.getElementById("wishContainer");
+
+        qrContainer.addEventListener("click", () => {
+            qrContainer.style.display = "none";
+            pinEntry.style.display = "block";
+        });
+
+        submitPin.addEventListener("click", () => {
+            if (pinInput.value === correctPin) {
+                pinEntry.style.display = "none";
+                wishContainer.style.display = "block";
+                startWishes();
+            } else {
+                errorMsg.textContent = "Incorrect pin! Try again.";
+                pinInput.value = "";
+            }
+        });
+
+        /* -------------------- WISHES & CAT IMAGES -------------------- */
+        const wishes = [
+            { text: `Dear Roop 🐾\nMay 2026 treat you kindly, with calm mornings, happy surprises, and gentle moments that warm your heart.\nHappy New Year 2026 🎉✨`, img: "https://i.pinimg.com/736x/cb/fe/9d/cbfe9db8663370d8ec5c05950e26bbac.jpg" },
+            { text: `Roop 💛\nA new year, a fresh start.\nMay 2026 fill your days with peace, your nights with comfort, and your life with balance.\nWishing you a beautiful New Year 🌟`, img: "https://i.pinimg.com/736x/9f/cd/80/9fcd8054b355bdad56dd967847713a4a.jpg" },
+            { text: `Dear Roop 🔥\nMay 2026 be the year you believe in yourself more, move forward with courage, and grow into everything you dream of.\nHappy New Year 2026 🚀`, img: "https://i.pinimg.com/736x/46/79/4c/46794cf265e3454b10cfe47c4bbe096a.jpg" },
+            { text: `Hey Roop 😄🐱\nMore smiles, fewer worries, more wins, less stress, and lots of happy moments ahead!\nHappy New Year 2026 🎊`, img: "https://i.pinimg.com/736x/11/8c/c8/118cc81c633316f14688da16832f90b3.jpg" },
+            { text: `Roop 🌈\nMay 2026 slow down when you need peace and lift you up when you chase dreams.\nWishing you a light, calm, and joyful year ✨`, img: "https://i.pinimg.com/736x/90/dd/3f/90dd3f2ef158e6c34afa09ff68729ddb.jpg" },
+            { text: `Dear Roop 🐱✨\nMay your year be playful like a kitten, warm like a soft hug, and full of moments worth remembering.\nHappy New Year 2026 🎉`, img: "https://i.pinimg.com/736x/bb/fe/d2/bbfed28920b4326a858fd6cc7c656ee7.jpg" },
+            { text: `Roop 🌟\nStep into 2026 with hope in your heart and confidence in your steps.\nSomething good is waiting for you.\nHappy New Year 🎆`, img: "https://i.pinimg.com/736x/4a/5f/2d/4a5f2d24c906757576d6a4df5600269f.jpg" },
+            { text: `Hey Roop 😺\nSmile more, stress less, and enjoy every little surprise 2026 brings your way!\nHappy New Year 🎉🐾`, img: "https://i.pinimg.com/1200x/89/bb/35/89bb35c730f40852ffcd9e885587175b.jpg" },
+            { text: `Roop 💫\nMay your heart feel lighter, your days feel brighter, and your dreams feel closer in 2026.\nWarm wishes for the New Year ✨`, img: "https://i.pinimg.com/736x/b9/3a/ff/b93affb099beb34a4ddc34c5ddac5802.jpg" },
+            { text: `Dear Roop 🎇\nLet go of what’s heavy, hold on to what matters, and walk into 2026 with a peaceful smile.\nHappy New Year 🌸`, img: "https://i.pinimg.com/1200x/cc/50/63/cc506354d3bd16a508b013e1bc037a96.jpg" },
+            { text: `Roop 🐾\nSmall joys, quiet wins, and meaningful moments await you in 2026.\nWishing you a truly happy year ✨`, img: "https://i.pinimg.com/736x/92/77/2c/92772c65ffd72c948ace41748963af20.jpg" },
+            { text: `Dear Roop 🌙\nMay 2026 be gentle on your heart and kind to your dreams.\nHappy New Year with lots of warmth and peace 💛`, img: "https://i.pinimg.com/736x/ec/fd/64/ecfd64ed829f6871ae4bb03ebe7c1f28.jpg" }
+        ];
+
+        let i = 0;
+        const wishBox = document.getElementById("wishText");
+        const catImg = document.getElementById("catImage");
+
+        const decorImg = document.getElementById("autoDecor");
+        const decorKeywords = ["new year fireworks", "new year celebration", "happy new year lights", "new year confetti", "2026 celebration", "new year night sky"];
+        function changeDecor() { const keyword = decorKeywords[Math.floor(Math.random() * decorKeywords.length)]; decorImg.src = `https://source.unsplash.com/500x300/?${keyword}`; }
+        changeDecor();
+
+        function triggerConfetti() { for (let j = 0; j < 100; j++) { const conf = document.createElement("div"); conf.style.position = "fixed"; conf.style.width = "8px"; conf.style.height = "8px"; conf.style.backgroundColor = `hsl(${Math.random() * 360},100%,50%)`; conf.style.left = Math.random() * window.innerWidth + "px"; conf.style.top = "0px"; conf.style.zIndex = 50; conf.style.pointerEvents = "none"; conf.style.opacity = Math.random(); conf.style.borderRadius = "50%"; document.body.appendChild(conf); const fall = setInterval(() => { let top = parseFloat(conf.style.top); if (top > window.innerHeight) { clearInterval(fall); conf.remove(); } conf.style.top = top + Math.random() * 7 + "px"; }, 16); } }
+
+        function startWishes() {
+            function showWish() {
+                wishBox.style.opacity = 0;
+                setTimeout(() => {
+                    wishBox.innerText = wishes[i].text;
+                    catImg.src = wishes[i].img;
+                    wishBox.style.opacity = 1;
+                    triggerConfetti();
+                    changeDecor();
+                }, 500);
+                i = (i + 1) % wishes.length;
+            }
+            showWish();
+            setInterval(showWish, 6500);
+
+            /* -------------------- MUSIC -------------------- */
+            const music = document.getElementById("bgMusic");
+            let musicStarted = false;
+            document.addEventListener("click", () => {
+                if (!musicStarted) { music.play(); musicStarted = true; document.getElementById("musicHint").style.display = "none"; }
+            });
+
+            /* -------------------- CAT PAW TRAIL -------------------- */
+            const pawURL = "https://i.pinimg.com/736x/11/8c/c8/118cc81c633316f14688da16832f90b3.jpg";
+            document.addEventListener("mousemove", (e) => {
+                const paw = document.createElement("img");
+                paw.src = pawURL;
+                paw.className = "paw";
+                paw.style.left = e.clientX + "px";
+                paw.style.top = e.clientY + "px";
+                document.body.appendChild(paw);
+                setTimeout(() => paw.remove(), 1000);
+            });
+
+            /* -------------------- FIREWORKS -------------------- */
+            const canvas = document.getElementById("fireworks");
+            const ctx = canvas.getContext("2d");
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
+            let sparks = [];
+            function Spark() { this.x = Math.random() * canvas.width; this.y = canvas.height; this.size = Math.random() * 3 + 2; this.speed = Math.random() * 5 + 3; this.color = `hsl(${Math.random() * 360},100%,50%)`; }
+            function animate() {
+                ctx.fillStyle = "rgba(0,0,0,0.2)";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                if (Math.random() < 0.05) sparks.push(new Spark());
+                sparks.forEach((s, i) => {
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                    ctx.fillStyle = s.color;
+                    ctx.fill();
+                    s.y -= s.speed;
+                    if (s.y < 0) sparks.splice(i, 1);
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+
+            /* -------------------- GLITTER -------------------- */
+            const glitterCanvas = document.getElementById("glitter");
+            const gtx = glitterCanvas.getContext("2d");
+            function resizeGlitter() { glitterCanvas.width = window.innerWidth; glitterCanvas.height = window.innerHeight; }
+            resizeGlitter();
+            window.addEventListener("resize", resizeGlitter);
+            let glitter = [];
+            function Glitter() { this.x = Math.random() * glitterCanvas.width; this.y = Math.random() * glitterCanvas.height; this.size = Math.random() * 2 + 0.5; this.speed = Math.random() * 0.5 + 0.2; this.alpha = Math.random(); }
+            function glitterAnimate() {
+                gtx.clearRect(0, 0, glitterCanvas.width, glitterCanvas.height);
+                if (glitter.length < 120) glitter.push(new Glitter());
+                glitter.forEach((p, i) => {
+                    gtx.beginPath();
+                    gtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    gtx.fillStyle = `rgba(255,215,0,${p.alpha})`;
+                    gtx.fill();
+                    p.y += p.speed;
+                    if (p.y > glitterCanvas.height) glitter[i].y = 0;
+                });
+                requestAnimationFrame(glitterAnimate);
+            }
+            glitterAnimate();
+        }
+    </script>
+</body>
+
+</html>
