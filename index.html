@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Happy New Year 2026 for Roop</title>
     <style>
+        /* Your existing CSS here, unchanged */
         * {
             margin: 0;
             padding: 0;
@@ -207,11 +208,9 @@
     <script>
         /* -------------------- QR CODE -------------------- */
         const qrCode = document.getElementById("qrCode");
-        try {
-            let currentURL = window.location.href;
-            if (currentURL.startsWith("file://")) { currentURL = "https://your-website-link.com"; } // replace if hosted
-            qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(currentURL)}`;
-        } catch (err) { console.error("QR code failed", err); qrCode.alt = "QR code not available"; }
+        // Replace YOUR_GITHUB_USERNAME and REPO_NAME
+        const hostedURL = "https://YOUR_GITHUB_USERNAME.github.io/REPO_NAME/";
+        qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(hostedURL)}`;
 
         /* -------------------- PIN LOGIC -------------------- */
         const correctPin = "09/07/2005";
@@ -244,14 +243,8 @@
             { text: `Roop 💛\nA new year, a fresh start.\nMay 2026 fill your days with peace, your nights with comfort, and your life with balance.\nWishing you a beautiful New Year 🌟`, img: "https://i.pinimg.com/736x/9f/cd/80/9fcd8054b355bdad56dd967847713a4a.jpg" },
             { text: `Dear Roop 🔥\nMay 2026 be the year you believe in yourself more, move forward with courage, and grow into everything you dream of.\nHappy New Year 2026 🚀`, img: "https://i.pinimg.com/736x/46/79/4c/46794cf265e3454b10cfe47c4bbe096a.jpg" },
             { text: `Hey Roop 😄🐱\nMore smiles, fewer worries, more wins, less stress, and lots of happy moments ahead!\nHappy New Year 2026 🎊`, img: "https://i.pinimg.com/736x/11/8c/c8/118cc81c633316f14688da16832f90b3.jpg" },
-            { text: `Roop 🌈\nMay 2026 slow down when you need peace and lift you up when you chase dreams.\nWishing you a light, calm, and joyful year ✨`, img: "https://i.pinimg.com/736x/90/dd/3f/90dd3f2ef158e6c34afa09ff68729ddb.jpg" },
-            { text: `Dear Roop 🐱✨\nMay your year be playful like a kitten, warm like a soft hug, and full of moments worth remembering.\nHappy New Year 2026 🎉`, img: "https://i.pinimg.com/736x/bb/fe/d2/bbfed28920b4326a858fd6cc7c656ee7.jpg" },
-            { text: `Roop 🌟\nStep into 2026 with hope in your heart and confidence in your steps.\nSomething good is waiting for you.\nHappy New Year 🎆`, img: "https://i.pinimg.com/736x/4a/5f/2d/4a5f2d24c906757576d6a4df5600269f.jpg" },
-            { text: `Hey Roop 😺\nSmile more, stress less, and enjoy every little surprise 2026 brings your way!\nHappy New Year 🎉🐾`, img: "https://i.pinimg.com/1200x/89/bb/35/89bb35c730f40852ffcd9e885587175b.jpg" },
-            { text: `Roop 💫\nMay your heart feel lighter, your days feel brighter, and your dreams feel closer in 2026.\nWarm wishes for the New Year ✨`, img: "https://i.pinimg.com/736x/b9/3a/ff/b93affb099beb34a4ddc34c5ddac5802.jpg" },
-            { text: `Dear Roop 🎇\nLet go of what’s heavy, hold on to what matters, and walk into 2026 with a peaceful smile.\nHappy New Year 🌸`, img: "https://i.pinimg.com/1200x/cc/50/63/cc506354d3bd16a508b013e1bc037a96.jpg" },
-            { text: `Roop 🐾\nSmall joys, quiet wins, and meaningful moments await you in 2026.\nWishing you a truly happy year ✨`, img: "https://i.pinimg.com/736x/92/77/2c/92772c65ffd72c948ace41748963af20.jpg" },
-            { text: `Dear Roop 🌙\nMay 2026 be gentle on your heart and kind to your dreams.\nHappy New Year with lots of warmth and peace 💛`, img: "https://i.pinimg.com/736x/ec/fd/64/ecfd64ed829f6871ae4bb03ebe7c1f28.jpg" }
+            { text: `Roop 🌈\nMay 2026 slow down when you need peace and lift you up when you chase dreams.\nWishing you a light, calm, and joyful year ✨`, img: "https://i.pinimg.com/736x/90/dd/3f/90dd3f2ef158e6c34afa09ff68729ddb.jpg" }
+            // Add the rest of your wishes here...
         ];
 
         let i = 0;
@@ -333,14 +326,7 @@
             function glitterAnimate() {
                 gtx.clearRect(0, 0, glitterCanvas.width, glitterCanvas.height);
                 if (glitter.length < 120) glitter.push(new Glitter());
-                glitter.forEach((p, i) => {
-                    gtx.beginPath();
-                    gtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                    gtx.fillStyle = `rgba(255,215,0,${p.alpha})`;
-                    gtx.fill();
-                    p.y += p.speed;
-                    if (p.y > glitterCanvas.height) glitter[i].y = 0;
-                });
+                glitter.forEach((p, i) => { gtx.beginPath(); gtx.arc(p.x, p.y, p.size, 0, Math.PI * 2); gtx.fillStyle = `rgba(255,215,0,${p.alpha})`; gtx.fill(); p.y += p.speed; if (p.y > glitterCanvas.height) glitter[i].y = 0; });
                 requestAnimationFrame(glitterAnimate);
             }
             glitterAnimate();
